@@ -52,4 +52,36 @@ Dank der Sticker-Kampagne wächst das Netzwerk organisch. Halte in der City (bes
 
 Das visuelle Konzept (Logo, Sticker und Hardware-Ästhetik) wurde entwickelt, um die rohe Kraft des Pi Zero 2 W zu zelebrieren.
 
+**🛡️ FAQ für Skeptics & Tech-Admins**
+
+Wenn man von „serverlosem P2P-Warfare“ hört, gehen bei erfahrenen SysAdmins die Alarmglocken an. Hier sind die Antworten auf die brennendsten Fragen:
+
+**1. „Versteckte SSID? Ist das nicht nur Security by Obscurity?“**
+
+- Antwort: Absolut. Aber im Ghost Mode geht es nicht um kryptographische Unbesiegbarkeit, sondern um digitale Unauffälligkeit im öffentlichen Raum.
+- Durch ignore_broadcast_ssid=1 taucht dein Pi in 99 % aller Smartphone-Scanner in der Bahn gar nicht erst auf.
+- Der eigentliche Handshake für den Kampf erfolgt über einen temporären ECC-basierten PSK, der nur via BLE-Beacon geflüstert wird.
+
+**2. „Zerstört der ständige Scan meinen Akku?“**
+
+- Nein. Wir nutzen ein hocheffizientes Duty-Cycle-Verfahren.
+- Der Pi scannt nur alle 30 Sekunden für exakt 5 Sekunden die Umgebung.
+- In der restlichen Zeit sendet er nur passiv seinen Beacon, was die CPU-Last des Pi Zero 2 W bei unter 2 % hält und die Powerbank schont.
+
+**3. „Müllt mir das P2P-Interface nicht die SSH-Verbindung zu?“**
+
+- Hier kommt die Split-Tunneling-Architektur ins Spiel.
+- Dein Management-Interface (wlan0) und das Kampf-Interface (tun0) sind logisch voneinander getrennt.
+- Selbst wenn ein Kampf gerade 100 % der P2P-Bandbreite beansprucht, bleibt dein Terminal am Handy flüssig, da es auf einer priorisierten statischen Route liegt.
+
+**4. „Wie fair ist das Kampfsystem wirklich?“**
+
+- Das gesamte Balancing basiert auf einem 100-Punkte-Gesetz.
+
+- Es ist ein Nullsummenspiel: $$ATK + DEF + SPD + LUK = 100$$
+
+- Kein Spieler kann „overpowered“ sein, ohne massive Schwächen in anderen Bereichen in Kauf zu nehmen. Ein Sieg hängt von der Spezialisierung deiner Ausrüstung und dem Glück beim Würfeln (LUK) ab.
+
+
+
 
