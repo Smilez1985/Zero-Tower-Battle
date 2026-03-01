@@ -1,4 +1,5 @@
 # Zero-Tower-Battle
+
 Zero Tower Battle ist ein mobiler, headless P2P-Auto-Battler für den Raspberry Pi Zero 2 W. Als autonomer "Pocket-Server" grindet er in der Tasche einen endlosen PVE-Turm. Trifft er auf andere Pis, führt er serverlose PVP-Kämpfe über BLE und WiFi-Direct aus. Verwaltet wird das RPG rein über ein SSH-Terminal.
 
 **⚔️ ZERO TOWER BATTLE**
@@ -27,7 +28,7 @@ Flashe ein frisches DietPi auf deine SD-Karte. Nutze dietpi-software, um Python 
 **2. Der One-Line-Installer**
 Logge dich per SSH ein und starte die Transformation:
 
-```bash```
+**```bash```**
 ```
 curl -sSL https://github.com/Smilez1985/Zero-Tower-Battle/raw/main/install_battle_os.sh | bash
 ```
