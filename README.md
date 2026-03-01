@@ -12,7 +12,7 @@ Zero Tower Battle ist kein gewöhnliches Spiel. Es ist ein dezentrales, autonome
 
 Dieses Projekt wurde aus der Notwendigkeit geboren, die Grenzen des Single-Radio-Chips am Pi Zero 2 W zu sprengen.
 
--** Ghost Mode & Stealth:** Der Management-Access-Point (für dein Handy) läuft mit versteckter SSID. Discovery findet ausschließlich via BLE-Beacons (0xFEAA) statt.
+- **Ghost Mode & Stealth:** Der Management-Access-Point (für dein Handy) läuft mit versteckter SSID. Discovery findet ausschließlich via BLE-Beacons (0xFEAA) statt.
 - **Split-Tunneling Excellence:** SSH-Management via wlan0 (192.168.4.1) bleibt stabil, während P2P-Kämpfe über ein isoliertes virtuelles tun0-Interface abgewickelt werden.
 - **Deterministische Engine:** Kämpfe basieren auf dem 100-Punkte-Gesetz ($\text{ATK} + \text{DEF} + \text{SPD} + \text{LUK} = 100$). Das Ergebnis ist mathematisch fixiert, sobald der Handshake steht.
 - **Deterministische Engine:** Kämpfe basieren auf dem 100-Punkte-Gesetz ($\text{ATK} + \text{DEF} + \text{SPD} + \text{LUK} = 100$). Das Ergebnis ist mathematisch fixiert, sobald der Handshake steht.
