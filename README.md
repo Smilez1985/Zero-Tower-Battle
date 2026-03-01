@@ -27,9 +27,10 @@ Flashe ein frisches DietPi auf deine SD-Karte. Nutze dietpi-software, um Python 
 **2. Der One-Line-Installer**
 Logge dich per SSH ein und starte die Transformation:
 
-'''Bash
+```bash```
+```
 curl -sSL https://github.com/Smilez1985/Zero-Tower-Battle/raw/main/install_battle_os.sh | bash
-'''
+```
 
 **3. Was das Skript macht:**
 - Konfiguriert den Access Point (Hostname & IP nach deiner Wahl).
