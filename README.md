@@ -48,7 +48,7 @@ Dein Warrior wird über das TUI (Text User Interface) verwaltet. Verbinde dich e
 
 **📍 Die Jagd in der Realität**
 
-Dank der Sticker-Kampagne wächst das Netzwerk organisch. Halte in der City (besonders in Saarbrücken!) Ausschau nach dem Zero-Tower-Logo. Wenn dein Pi abends im Log einen erfolgreichen Kampf anzeigt, weißt du: Irgendwo da draußen ist ein Gleichgesinnter.
+Dank der Sticker-Kampagne wächst das Netzwerk organisch. Halte in der City (besonders in Saarbrücken!) Ausschau nach dem Zero-Tower-Logo. Wenn dein Pi abends im Log einen erfolgreichen Kampf anzeigt, weißt du: Irgendwo da draußen ist ein Gleichgesinnter. Die Sticker sind im Repo unter /media zu finden. Druckt sie euch aus und klebt sie auf euren Pi, euren Laptop oder Eure PowerBank, verteilt sie von mir aus, aber bitte ohne euch dabei Strafbar zu machen.
 
 **🎨 Über das Design**
 
