@@ -2,7 +2,7 @@
 Zero Tower Battle ist ein mobiler, headless P2P-Auto-Battler für den Raspberry Pi Zero 2 W. Als autonomer "Pocket-Server" grindet er in der Tasche einen endlosen PVE-Turm. Trifft er auf andere Pis, führt er serverlose PVP-Kämpfe über BLE und WiFi-Direct aus. Verwaltet wird das RPG rein über ein SSH-Terminal.
 
 **⚔️ ZERO TOWER BATTLE**
-*Autonomer P2P-Underground-Battler für den Raspberry Pi Zero 2 W*
+*Autonomer P2P-Underground-Battler für den Raspberry Pi Zero 2 W* (ein perfektes "Set it and forget it"-Projekt...)
 
 ***"Dein Pi langweilt sich in der Schublade. Schenk ihm eine Bestimmung. Lass ihn für dich kämpfen."***
 
