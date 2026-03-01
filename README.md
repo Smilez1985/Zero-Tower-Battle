@@ -20,7 +20,7 @@ Dieses Projekt wurde aus der Notwendigkeit geboren, die Grenzen des Single-Radio
 
 **🛠️ Installation (DietPi Quickstart)**
 
-Dieses Projekt ist für DietPi (x64) optimiert, um den RAM-Footprint minimal zu halten (~50MB inklusive RAM-Disk).
+Dieses Projekt ist für DietPi (ARM/aarch64) optimiert, um den RAM-Footprint minimal zu halten (~50MB inklusive RAM-Disk).
 
 **1. Vorbereitung**
 Flashe ein frisches DietPi auf deine SD-Karte. Nutze dietpi-software, um Python 3 und Git zu installieren.
