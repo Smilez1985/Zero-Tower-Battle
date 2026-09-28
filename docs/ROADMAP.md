@@ -7,7 +7,58 @@ aufgefallen ist, aber bewusst **nicht** sofort behoben wurde — weil es eine
 Design-Entscheidung braucht, Hardware voraussetzt oder ueber eine reine
 Fehlerkorrektur hinausgeht.
 
-Was bereits erledigt ist, steht im CHANGELOG und in `docs/BALANCING.md`.
+**Blaupause des Projekts:** `docs/DESIGN.md` (Entscheidungen und Regeln) +
+`docs/ROADMAP.md` (diese Datei) + `CHANGELOG.md` (Historie).
+Was bereits erledigt ist, steht im Changelog; Messreihen zum Balancing in
+`docs/BALANCING.md`.
+
+---
+
+## 0. Geplant, aber nie implementiert
+
+Diese Punkte stehen in den Planungsdokumenten und fehlen im Code. Sie sind
+keine neuen Ideen, sondern verlorenes Wissen auf dem Weg von der Planung zur
+Umsetzung.
+
+### 0.1 Die vierte Klasse: Jäger
+**Prioritaet: mittel**
+
+Geplant war ein Allrounder mit gleichmaessiger Verteilung:
+
+| Klasse | Typ | Fokus | ATK | DEF | SPD | LUK |
+|--------|-----|-------|-----|-----|-----|-----|
+| Jäger | Schere | Allrounder | 25 | 25 | 25 | 25 |
+
+Bemerkenswert: In der Balancing-Simulation war genau diese gleichmaessige
+Verteilung die stabilste. Der Jäger waere damit die verlaesslichste Klasse —
+unauffaellig, aber nie chancenlos.
+
+Betroffen: `data/classes.json`, `forge.py`, `engine/battle_engine.py`
+(CLASS_STATS), Uebersetzungen.
+
+### 0.2 Klassen-Skills
+**Prioritaet: mittel**
+
+Jede Klasse sollte eine Spezialfaehigkeit haben:
+
+| Klasse | Skill | Effekt |
+|--------|-------|--------|
+| Magier | Manabrand | Verbraucht Punkte des Gegners |
+| Krieger | Schildstoss | Betaeubt (SPD sinkt kurzzeitig) |
+| Schurke | Meucheln | Garantierter Krit, wenn SPD > Gegner-SPD |
+| Jäger | Praezisionsschuss | Ignoriert 20 % der Ruestung |
+
+Der Praezisionsschuss ist mehr als Geschmack: Ruestungsdurchschlag ist das
+Standardgegenmittel gegen Ruestungssaettigung und wuerde Punkt 1.1
+entschaerfen. Das Design hatte die Antwort auf das Balancing-Problem
+bereits — der Code kennt sie nicht.
+
+### 0.3 Patzer (Fumble)
+**Prioritaet: niedrig**
+
+Geplant war LUK als beidseitiger Hebel: erhoeht die Krit-Chance **und**
+senkt das Risiko eines Patzers (halber Schaden). Implementiert ist nur der
+Krit. LUK ist dadurch ein reiner Bonus-Stat ohne Absicherungsfunktion.
 
 ---
 
@@ -72,26 +123,22 @@ Sinnvoll waere:
   abgesetzten Kommandos gegen eine Erwartungsliste pruefen
 - Integrationstest, der auf einem echten Pi laeuft (Marker `@pytest.mark.hardware`)
 
-### 2.2 Keine Tests fuer die Kampf-Engines
-**Prioritaet: hoch**
+### 2.2 Integrationstest auf echter Hardware
+**Prioritaet: mittel**
 
-Der gravierendste Bug des Projekts — zwei divergierende Schadensformeln in
-`deterministic_battle.py` und `engine/battle_engine.py` — waere durch einen
-einzigen Test aufgefallen, der beide Engines mit identischen Eingaben
-vergleicht. Fehlt bislang.
+`tests/test_battle_parity.py` und `tests/test_p2p_consistency.py` decken
+Engine-Paritaet, Determinismus und Rollenvergabe inzwischen ab — aber beide
+simulieren den zweiten Teilnehmer im selben Prozess.
 
-Vorschlag:
+Was weiterhin fehlt: ein Lauf ueber zwei physische Pis, der die Logs beider
+Geraete nach dem Kampf vergleicht. Genau das war beim bisherigen Feldtest
+nicht geprueft worden — die Kaempfe liefen durch, aber niemand legte die
+Ergebnisse nebeneinander. Die Abweichung in der Rollenvergabe blieb dadurch
+unbemerkt.
 
-```python
-def test_engines_agree_on_damage():
-    """PVE- und PVP-Engine muessen identisch rechnen."""
-    for level in (1, 10, 30, 50):
-        for atk, dfs in [(25, 40), (45, 10), (60, 25)]:
-            assert pve_damage(atk, dfs, level) == pvp_damage(atk, dfs, level)
-```
-
-Dazu ein Property-Test: derselbe Seed muss auf zwei Instanzen denselben
-Kampfverlauf erzeugen (Kernversprechen des P2P-Designs, bisher ungetestet).
+Vorschlag: Skript, das per SSH auf beide Geraete zugreift, einen Kampf mit
+festem Seed ausloest und `battle.log` beider Seiten diff-t. Marker
+`@pytest.mark.hardware`, im CI uebersprungen.
 
 ### 2.3 Testabdeckung unbekannt
 **Prioritaet: niedrig**
@@ -159,6 +206,37 @@ Kampf ungueltig.
 Erwartbar fuer einen Systeminstaller, sollte aber im README stehen, samt
 Hinweis darauf, was genau veraendert wird (hostapd, dnsmasq, systemd-Units,
 Benutzeranlage).
+
+### 4.4 Keine Input-Validierung auf Port 5005
+**Prioritaet: hoch — vor jedem Einsatz im oeffentlichen Raum**
+
+`battle_server` nimmt JSON-Profile fremder Geraete entgegen und reicht sie
+per `json.loads()` direkt an die Engine weiter. Keine Schema-Pruefung, keine
+Laengenbegrenzung, keine Plausibilitaetspruefung.
+
+Die eigene Planungsanalyse benannte das bereits deutlich:
+
+> *"Der Socket-Server, der auf Port 5005 lauscht, nimmt die JSON-Profile der
+> entdeckten Gegner entgegen und reicht sie ohne jegliche Identifizierung
+> oder Strukturvalidierung an die Engine weiter. […] Ein manipuliertes
+> JSON-Objekt, das ueberlange Strings enthaelt oder bei unsauberer
+> Deserialisierung in Python direkt Code ausfuehrt, reicht aus, um eine
+> Root-Shell auf dem System zu erzwingen."*
+
+Der Befund ist seit der Planungsphase bekannt und bis heute offen.
+
+Erforderlich:
+
+- Schema-Validierung mit Pydantic vor jeder Verarbeitung
+- harte Laengenbegrenzung der empfangenen Bytes
+- Plausibilitaetspruefung der Stats: Summe = 100 + 5 x (Level - 1),
+  jeder Wert zwischen 1 und 100
+- Zeichensatz-Whitelist fuer Namensfelder (verhindert Terminal-Escapes im
+  SSH-Dashboard)
+- Ablehnung unbekannter Felder statt stillem Ignorieren
+
+Bis dahin sollte ZTB nur in kontrollierter Umgebung mit bekannten Geraeten
+laufen.
 
 ---
 
