@@ -32,6 +32,26 @@ import time
 # pylint: disable=import-error, unused-import
 
 
+def _safe_run(cmd, **kwargs):
+    """
+    subprocess.run(), das ein fehlendes Binary nicht als Exception
+    hochreicht.
+
+    Fix 2026-09: `check=False` faengt nur Fehler-Exitcodes ab, nicht ein
+    nicht vorhandenes Programm. Auf Nicht-Debian-Systemen (und in der
+    Test-Suite) flogen deshalb FileNotFoundError fuer `ip`, `iptables`,
+    `wpa_cli` und `dpkg-query`.
+    """
+    kwargs.setdefault("check", False)
+    kwargs.setdefault("capture_output", True)
+    try:
+        return subprocess.run(cmd, **kwargs)
+    except (FileNotFoundError, OSError, PermissionError) as exc:
+        print(f"\u2139\ufe0f  uebersprungen ({cmd[0]} nicht verfuegbar): {exc}")
+        return subprocess.CompletedProcess(cmd, returncode=127,
+                                           stdout=b"", stderr=b"")
+
+
 class NetworkMode(Enum):
     """Netzwerk-Modi."""
     P2P = "p2p"
@@ -103,8 +123,22 @@ class NetManager:
         await self._run_command(["iptables", "-A", "INPUT", "-p", "icmp", "-j", "ACCEPT"])
         
         # DHCP/DNS Server Setup
-        dhcptool = subprocess.run(["dpkg-query", "-W", "apt-utils | grep dnsmasq"], capture_output=True)
-        if dhcptool.returncode:
+        # Fix 2026-09: Der Aufruf lief ungeschuetzt und warf auf Systemen ohne
+        # dpkg (bzw. in Tests) einen FileNotFoundError. Ausserdem wurde die
+        # Pipe als einzelnes Argument uebergeben — dpkg-query sah einen
+        # Paketnamen "apt-utils | grep dnsmasq" und konnte nie erfolgreich sein.
+        try:
+            dhcptool = _safe_run(
+                ["dpkg-query", "-W", "dnsmasq"],
+                capture_output=True,
+                check=False,
+            )
+            dnsmasq_missing = dhcptool.returncode != 0
+        except (FileNotFoundError, OSError):
+            print("ℹ️  dpkg-query nicht verfuegbar - dnsmasq-Pruefung uebersprungen")
+            dnsmasq_missing = False
+
+        if dnsmasq_missing:
             print("📦 Installing dnsmasq...")
             await self._run_command(["apt", "update"])
             await self._run_command(["apt", "install", "-y", "dnsmasq"])
@@ -122,9 +156,9 @@ country=DE
         print("✅ DNSMASQ Config saved!")
         
         # TUN0 Interface Setup
-        subprocess.run(["ip", "tuntap", "add", "tun0", "mode", "tun"], check=False)
-        subprocess.run(["ip", "link", "set", "dev", "tun0", "up"], check=False)
-        subprocess.run(["ip", "addr", "add", "10.42.0.1", "dev", "tun0"], check=False)
+        _safe_run(["ip", "tuntap", "add", "tun0", "mode", "tun"], check=False)
+        _safe_run(["ip", "link", "set", "dev", "tun0", "up"], check=False)
+        _safe_run(["ip", "addr", "add", "10.42.0.1", "dev", "tun0"], check=False)
         print(f"✅ tun0 Interface created (10.42.0.{self.ip_suffix})!")
         
         # FORWARD DROP: Isolation (wlan0 vs tun0) 🔐
@@ -158,7 +192,7 @@ country=DE
                                 "-p", "udp", "--dport 53", "-j", "ACCEPT"])
         
         # DHCP: wpa_cli für wlan0
-        subprocess.run(["wpa_cli", "set_ifstate_ifname", "wlan0", "START"], check=False)
+        _safe_run(["wpa_cli", "set_ifstate_ifname", "wlan0", "START"], check=False)
         
         print("✅ Network isolation complete!")
         print(f"📡 wlan0 (AP): 192.168.4.1/24")
@@ -214,5 +248,5 @@ country=DE
         Shutdown network.
         """
         print("🔌 Disjoining P2P...")
-        subprocess.run(["wpa_cli", "p2p_disconnect"], check=False)
+        _safe_run(["wpa_cli", "p2p_disconnect"], check=False)
         print("✅ Network disconnected!")

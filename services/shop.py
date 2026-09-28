@@ -125,8 +125,16 @@ class Shop:
         }
     
     def check_shop_refresh(self):
-        """Check if shop needs refresh."""
-        if datetime.now() - self.last_refresh > self.refresh_interval:
+        """
+        Check if shop needs refresh.
+
+        Fix 2026-09: `datetime.now() - self.last_refresh` ergibt ein
+        timedelta, `self.refresh_interval` ist aber ein int (Sekunden).
+        Der Vergleich warf bei jedem Aufruf einen TypeError. Jetzt wird
+        die Differenz explizit in Sekunden umgerechnet.
+        """
+        elapsed = (datetime.now() - self.last_refresh).total_seconds()
+        if elapsed > self.refresh_interval:
             self.refresh_shop()
             return {"needs_refresh": True}
         return {"needs_refresh": False}

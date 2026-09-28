@@ -18,19 +18,17 @@ bleak>=0.21.0
 # Curve25519 (DH Key Exchange) + Ed25519 (Signaturen)
 cryptography>=41.0.0
 
-# --- Terminal-Eingabe (Charakter-Erstellung) ---
-# Fuer readchar/readkey in der interaktiven Forge
-readchar>=4.0.0
-
 # --- UI-Abhaengigkeiten ---
 # SSH-Dashboard mit Rich-Ausgabe
 rich>=13.0.0
 Pillow>=9.0.0
 
-# --- Test-Abhaengigkeiten (optional) ---
-# pytest>=7.0.0
-# pytest-cov>=4.0.0
-# pytest-asyncio>=0.21.0
+# HINWEIS: Alle Laufzeit-Abhaengigkeiten werden im Code in
+# try/except ImportError gekapselt. Fehlt ein Paket, faellt das
+# jeweilige Modul auf einen Textmodus bzw. eine Simulation zurueck,
+# statt den Start zu verhindern.
+#
+# readchar wurde 2026-09 entfernt: kein einziger Import im Projekt.
 
 # ============================================
 # HINWEIS: sqlite3, curses, sys, os, json,
