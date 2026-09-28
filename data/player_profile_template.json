@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "description": "BLE-Profil-Export fuer P2P-Erkennung und PVP-Matchmaking"
+  },
+  "profile": {
+    "device_name": "",
+    "character_name": "",
+    "class": "",
+    "type": "",
+    "level": 0,
+    "floor": 0,
+    "ascension": 1,
+    "pvp_wins": 0,
+    "pvp_losses": 0,
+    "pvp_power": 0.0,
+    "shiny_count": 0,
+    "codex_entries": 0
+  },
+  "ble": {
+    "mac_address": "",
+    "service_uuid": "0000FE42-0000-1000-8000-00805F9B34FB",
+    "public_key_b64": "",
+    "signature_b64": "",
+    "last_broadcast": ""
+  },
+  "taverne": {
+    "trinkbuddy_active": false,
+    "trinkbuddy_partner": "",
+    "leaderboard_rank": 0,
+    "gossip_relay_count": 0,
+    "rune_trades": 0
+  }
+}

@@ -1,0 +1,8 @@
+[Unit]
+Description=Zero Tower Battle PVE
+[Service]
+ExecStart=/usr/bin/env python3 /home/ZTB_Service/battle_game/init_game.py
+WorkingDirectory=/home/ZTB_Service/battle_game
+Restart=always
+[Install]
+WantedBy=multi-user.target

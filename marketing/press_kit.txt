@@ -1,0 +1,43 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ZERO TOWER BATTLE PRESS KIT
+
+FOR IMMEDIATE RELEASE
+
+Contact: 
+Email: 
+Website: 
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ABOUT ZERO TOWER BATTLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Zero Tower Battle is a challenging strategy RPG where players battle waves of 
+enemies in real-time combat. Experience tactical gameplay, build powerful 
+strategies, and climb the global leaderboards!
+
+KEY FEATURES:
+• "Real-time" strategy combat
+• Tactical enemy AI
+• Unlock exclusive items and upgrades
+• Intense boss encounters
+• Competitive multiplayer elements
+• Achievement system
+• Global leaderboards
+• Customizable gameplay
+• Full idle!
+
+PLATFORM:
+• Raspberry Pi Zero 2W
+• Linux-DietPi trixy
+
+STATUS:
+• Alpha 1.0.0 - Early Access
+• Full release planned for 2028
+
+FOR MEDIA INQUIRIES:
+📧 Email: 
+🔗 Website: 
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+#

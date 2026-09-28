@@ -1,0 +1,41 @@
+# ============================================
+# ZERO TOWER BATTLE (ZTB) - Dependencies
+# ============================================
+# Zielplattform: Raspberry Pi Zero 2 WH (DietPi)
+# Python: >= 3.9
+# ============================================
+
+# --- Build-Tools ---
+pip>=23.0
+wheel>=0.40.0
+setuptools>=68.0.0
+
+# --- BLE (Bluetooth Low Energy) ---
+# Fuer BLE-Beacon-Scanning und P2P-Erkennung
+bleak>=0.21.0
+
+# --- ECC Crypto ---
+# Curve25519 (DH Key Exchange) + Ed25519 (Signaturen)
+cryptography>=41.0.0
+
+# --- Terminal-Eingabe (Charakter-Erstellung) ---
+# Fuer readchar/readkey in der interaktiven Forge
+readchar>=4.0.0
+
+# --- UI-Abhaengigkeiten ---
+# SSH-Dashboard mit Rich-Ausgabe
+rich>=13.0.0
+Pillow>=9.0.0
+
+# --- Test-Abhaengigkeiten (optional) ---
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
+# pytest-asyncio>=0.21.0
+
+# ============================================
+# HINWEIS: sqlite3, curses, sys, os, json,
+# asyncio, subprocess, signal, shutil, time,
+# pathlib, collections, hashlib, struct, etc.
+# sind Teil der Python-Standardbibliothek
+# und muessen NICHT installiert werden.
+# ============================================

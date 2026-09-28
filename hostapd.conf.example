@@ -1,0 +1,50 @@
+# ZERO Tower Battle (ZTB) - hostapd Access Point Configuration
+# =================================================================
+# Zero-WLAN AP Settings:
+# ├─ Kanal: 6 (EU/DE)
+# ├─ SSID: per Installer gesetzt (CHANGE_ME_SSID)
+# ├─ Passwort: per Installer gesetzt (CHANGE_ME_PASSPHRASE)
+# ├─ ignore_broadcast_ssid=1 (Ghost Mode! 🔐)
+# └─ Clients: 50 max
+# pylint: disable=line-too-long
+
+# Global Settings
+driver=nl80211
+interface=wlan0
+ssid=CHANGE_ME_SSID
+hw_mode=g
+channel=6
+ieee80211n=1
+wpa=2
+wpa_passphrase=CHANGE_ME_PASSPHRASE_MIN_8_CHARS
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=CCMP
+rsn_pairwise=CCMP
+maxassoclimit=50
+max_inact=120
+max_asocs=50
+macaddr_acl=0
+auth_algs=1
+
+# 🔐 GHOST MODE: hide SSID broadcast
+ignore_broadcast_ssid=1  # Hide SSID! 🔐
+
+# Country Code (Deutschland)
+country=DE
+
+# Security (Passphrase oben definiert)
+wpa_text=0
+wpa_group_rekey=3600
+wpa_rekey_freq=5
+
+# Control interface (optional for wpa_cli)
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=www-data
+
+# DNS (optional)
+dnsv6cachesize=0
+dnsv6records=0
+dnssec=0
+
+# 🔐 BLE Beacon: 0xFEAA with ZTB_ prefix
+# BLE Beacon: "ZTB_" + MAC + timestamp

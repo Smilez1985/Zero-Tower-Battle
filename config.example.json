@@ -1,0 +1,70 @@
+{
+  "device": {
+    "name": "CHANGE_ME",
+    "hostname": "CHANGE_ME",
+    "cpu_info": "Raspberry Pi Zero 2 WH 1GHz",
+    "ram_mb": 512,
+    "storage_gb": 8
+  },
+  "character": {
+    "name": "CHANGE_ME",
+    "class": "Krieger",
+    "level": 1,
+    "language": "de",
+    "ui_language": [
+      "de",
+      "en"
+    ]
+  },
+  "hardware": {
+    "wlan0": {
+      "iface": "wlan0",
+      "mode": "ap",
+      "channel": 6,
+      "wpa2_passphrase": "ZeroBattle2026!",
+      "ip": "192.168.4.1",
+      "subnet": "255.255.255.0",
+      "max_clients": 50,
+      "country_code": "DE"
+    },
+    "tun0": {
+      "iface": "tun0",
+      "vnet_base": "10.42.0",
+      "method": "ifupdown",
+      "ipv6": false,
+      "max_connections": 2
+    }
+  },
+  "network": {
+    "sshd_port": 2222,
+    "tcp_port": 5005,
+    "backup_interval_minutes": 20,
+    "retry_seconds": 10,
+    "timeout_seconds": 8
+  },
+  "battle": {
+    "max_rounds": 30,
+    "world_boss_enabled": true,
+    "world_boss_floor_divisor": 25
+  },
+  "inventory": {
+    "slot_count": 9,
+    "equipped_item_limit": 1
+  },
+  "shop": {
+    "refresh_interval_hours": 24,
+    "items_per_shop": 3
+  },
+  "backup": {
+    "path": "/home/ZTB_Service/battle_game/backups",
+    "interval_minutes": 20,
+    "max_backups": 100
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "/home/ZTB_Service/battle_game/logs/battle_log.txt",
+    "rotate": true,
+    "rotate_on": 1000000,
+    "rotate_days": 30
+  }
+}

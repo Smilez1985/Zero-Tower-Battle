@@ -1,0 +1,46 @@
+{
+  "@@metadata": {
+    "name": "Enemy Balances",
+    "version": "1.0.0"
+  },
+  "enemies": {
+    "Goblin Scout": {
+      "hp": 100,
+      "attack": 25,
+      "speed": 1.5,
+      "xp": 50,
+      "gold": 20,
+      "drop_rate": 0.1
+    },
+    "Orc Warrior": {
+      "hp": 250,
+      "attack": 45,
+      "speed": 1.2,
+      "xp": 150,
+      "gold": 50,
+      "drop_rate": 0.15
+    },
+    "Dark Knight": {
+      "hp": 500,
+      "attack": 70,
+      "speed": 0.8,
+      "xp": 300,
+      "gold": 100,
+      "drop_rate": 0.2
+    },
+    "Dragon Lord": {
+      "hp": 1000,
+      "attack": 150,
+      "speed": 0.5,
+      "xp": 1000,
+      "gold": 500,
+      "drop_rate": 0.5
+    }
+  },
+  "balance_notes": [
+    "Orc Warriors should take 2 hits from player attacks",
+    "Dragon Lords should require multiple strategies",
+    "Speed values affect encounter rate",
+    "All values subject to tuning based on feedback"
+  ]
+}

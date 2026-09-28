@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "description": "Klassen-Definitionen fuer Zero Tower Battle",
+    "stat_sum_target": 100,
+    "stat_max_per_attribute": 50,
+    "stat_min_per_attribute": 1,
+    "levelup_bonus_points": 5,
+    "type_advantage_multiplier": 1.25,
+    "type_advantage_map": {
+      "Stein": {"beats": "Schere", "loses_to": "Papier"},
+      "Schere": {"beats": "Papier", "loses_to": "Stein"},
+      "Papier": {"beats": "Stein", "loses_to": "Schere"}
+    }
+  },
+  "classes": {
+    "Krieger": {
+      "type": "Stein",
+      "focus": "Defensive",
+      "description_de": "Defensiver Kaempfer. Haelt viel aus, schlaegt solide zu.",
+      "description_en": "Defensive fighter. Tanks well, hits solidly.",
+      "base_stats": {
+        "atk": 25,
+        "def": 40,
+        "spd": 20,
+        "luk": 15
+      },
+      "stat_sum": 100
+    },
+    "Schurke": {
+      "type": "Schere",
+      "focus": "Tempo",
+      "description_de": "Schneller Angreifer. Hohe Geschwindigkeit und Glueck.",
+      "description_en": "Fast attacker. High speed and luck.",
+      "base_stats": {
+        "atk": 25,
+        "def": 15,
+        "spd": 40,
+        "luk": 20
+      },
+      "stat_sum": 100
+    },
+    "Magier": {
+      "type": "Papier",
+      "focus": "Glaskanone",
+      "description_de": "Glaskanone. Enormer Schaden, aber zerbrechlich.",
+      "description_en": "Glass cannon. Enormous damage, but fragile.",
+      "base_stats": {
+        "atk": 45,
+        "def": 10,
+        "spd": 20,
+        "luk": 25
+      },
+      "stat_sum": 100
+    }
+  }
+}
