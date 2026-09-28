@@ -186,6 +186,49 @@ irgendwann durch direkte Importe ersetzen und entfernen.
 Groesste Datei nach `ui/options/war_room.py` (118 KB). Beide Kandidaten fuer
 eine Aufteilung, sobald sich die Struktur stabilisiert hat.
 
+### 5.4 Zwei getrennte PVP-Pfade mit unterschiedlicher Seed-Logik
+**Prioritaet: hoch — Grundsatzentscheidung noetig**
+
+Es existieren zwei vollstaendig getrennte Wege, einen PVP-Kampf auszufuehren:
+
+| | `controllers/battle_server.py` | `hybrid_orchestrator.py` |
+|---|---|---|
+| Engine | `BattleEngine.run_pvp_battle()` | `DeterministicBattle.run_pvp()` |
+| Seed | `SHA256(sortierte Namen + Timestamp)` | `SHA256(MACs nach IP + ECDH-Token)` |
+| Rolle A | lexikografisch kleinerer Name | kleineres IP-Suffix |
+
+Beide wurden 2026-09 auf symmetrische Rollenvergabe korrigiert, benutzen
+aber weiterhin unterschiedliche Seed-Quellen. Zwei Geraete, die ueber
+verschiedene Pfade in denselben Kampf gehen, erzeugen verschiedene Seeds
+und damit verschiedene Kampfverlaeufe.
+
+Der Orchestrator-Weg ist der bessere: Der Seed haengt an MACs und dem
+ECDH-Handshake-Token, ist also voellig zeitunabhaengig und nicht von aussen
+vorhersagbar. Der Server-Weg braucht dagegen synchronisierte Uhren — auf
+Pis ohne RTC eine Wette. Als Zwischenloesung quantisiert
+`battle_server.SEED_TIME_WINDOW` den Timestamp auf 60-Sekunden-Fenster;
+das faengt Drift ab, loest das Grundproblem aber nicht.
+
+Zu entscheiden: Ist `battle_server.py` noch der gewollte Weg, oder soll der
+Orchestrator-Pfad der einzige werden? Beim zweiten Fall kann `process_battle()`
+entfallen und der Server reicht nur noch Profile durch.
+
+### 5.5 Kein Abgleich der Ergebnisse zwischen den Geraeten
+**Prioritaet: hoch**
+
+Beide Seiten rechnen denselben Kampf — aber niemand vergleicht, ob dabei
+dasselbe herauskam. Der Server sendet sein Ergebnis (`handle_client`),
+der Client las es bis 2026-09 gar nicht aus und uebernimmt es jetzt
+ungeprueft.
+
+Solange die Engines identisch rechnen, ist das folgenlos. Weicht eine Seite
+ab — andere Version, manipuliertes Binary, Bitfehler —, faellt es nicht auf.
+
+Vorschlag: Beide Seiten bilden einen Hash ueber `(seed, rounds, winner,
+log)` und tauschen ihn aus. Abweichung = Kampf verworfen, Vorfall geloggt.
+Zusammen mit den Ed25519-Signaturen aus Punkt 4.2 ergibt das ein
+belastbares Ergebnis-Protokoll.
+
 ---
 
 ## 6. Dokumentation

@@ -90,15 +90,56 @@ class BattleClient:
             
             profile_bytes = json.dumps(profile_data).encode('utf-8')
             self.client_socket.sendall(profile_bytes)
-            
-            print(f"✅ Profile sent: {profile_data}")
-            
+
+            print(f"✅ Profile sent: {profile_data.get('name', '?')}")
+
+            # Fix 2026-09: Der Client hat die Server-Antwort nie gelesen.
+            # battle_server.py sendet das vollstaendige Kampfergebnis
+            # (handle_client, Zeile ~151), es landete bisher im Nirwana —
+            # der Client erfuhr nie, ob er gewonnen hat.
+            raw = self.client_socket.recv(65536)
+            if not raw:
+                return {
+                    "result": "FAILED",
+                    "message": "Server hat die Verbindung ohne Antwort geschlossen",
+                    "profile": profile_data,
+                }
+
+            try:
+                battle_result = json.loads(raw.decode("utf-8"))
+            except json.JSONDecodeError as exc:
+                return {
+                    "result": "FAILED",
+                    "message": f"Antwort nicht lesbar: {exc}",
+                    "profile": profile_data,
+                }
+
+            # ACHTUNG: Das Ergebnis stammt aus Sicht des SERVERS.
+            # local_winner/result beziehen sich auf dessen Champion und
+            # muessen fuer die eigene Anzeige gespiegelt werden.
+            server_result = battle_result.get("result", "DRAW")
+            if server_result == "WIN":
+                own_result = "LOSS"
+            elif server_result == "LOSS":
+                own_result = "WIN"
+            else:
+                own_result = "DRAW"
+
+            print(f"⚔️  Ergebnis: {own_result} "
+                  f"({battle_result.get('rounds', 0)} Runden, "
+                  f"Seed {battle_result.get('seed', '?')})")
+
             return {
                 "result": "SUCCESS",
-                "message": "Profile sent successfully",
-                "profile": profile_data
+                "message": "Profile sent, Ergebnis empfangen",
+                "profile": profile_data,
+                "battle": battle_result,
+                "own_result": own_result,
             }
-            
+
+        except socket.timeout:
+            print("❌ Timeout beim Warten auf das Kampfergebnis")
+            return {"result": "FAILED", "message": "Timeout"}
         except Exception as e:
             print(f"❌ Error sending profile: {e}")
             return {"result": "FAILED", "message": f"Error: {e}"}

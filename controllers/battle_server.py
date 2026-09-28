@@ -16,7 +16,7 @@ TCP-Server für P2P Encounters:
 import socket
 import json
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional, List
 # pylint: disable=import-error, unused-import
 
@@ -33,6 +33,11 @@ class BattleServer:
     ├─ Handle Disconnect
     └─ Graceful Shutdown
     """
+
+    # Zeitfenster (Sekunden) fuer die Seed-Quantisierung. Gleicht Uhrendrift
+    # zwischen zwei Pis ohne RTC aus, damit beide Seiten denselben Seed
+    # erzeugen. Siehe process_battle().
+    SEED_TIME_WINDOW = 60
 
     SOCKET_PORT = 5005
     MAX_BUFFER_SIZE = 4096
@@ -201,19 +206,54 @@ class BattleServer:
                     "timestamp": datetime.now().isoformat()
                 }
 
-            # 2. BattleEngine erstellen und PVP ausfuehren
-            engine = BattleEngine()
-            timestamp = int(datetime.now().timestamp())
+            # 2. Rollen deterministisch vergeben
+            #
+            # Fix 2026-09: Vorher war `player_a` immer das lokale Profil.
+            # Auf Geraet 1 ist damit der eigene Champion A, auf Geraet 2 der
+            # Gegner — und da bei SPD-Gleichstand A zuerst zuschlaegt, konnten
+            # beide Seiten zu verschiedenen Ergebnissen kommen.
+            # `generate_battle_seed()` sortiert zwar die Namen fuer den Seed,
+            # die ROLLEN aber nicht. Jetzt entscheidet der Name (lexikografisch),
+            # analog zur IP-Sortierung im hybrid_orchestrator.
+            local_name = local_profile.get("name", "A")
+            remote_name = remote_profile.get("name", "B")
 
+            local_is_a = local_name <= remote_name
+            if local_is_a:
+                player_a, player_b = local_profile, remote_profile
+            else:
+                player_a, player_b = remote_profile, local_profile
+
+            # Timestamp auf ein gemeinsames Zeitfenster quantisieren.
+            #
+            # Fix 2026-09: Sekundengenaue Timestamps driften auf zwei Pis ohne
+            # RTC auseinander. Faellt der Handshake ueber eine Sekundengrenze,
+            # erzeugen beide Seiten einen anderen Seed und rechnen einen
+            # anderen Kampf. Das Fenster gleicht kleine Abweichungen aus.
+            #
+            # Besser waere der Weg des Orchestrators: Seed aus MACs plus
+            # ECDH-Handshake-Token, voellig zeitunabhaengig. Siehe
+            # docs/ROADMAP.md, Punkt 5.4.
+            raw_ts = int(datetime.now(timezone.utc).timestamp())
+            timestamp = (raw_ts // self.SEED_TIME_WINDOW) * self.SEED_TIME_WINDOW
+
+            engine = BattleEngine()
             battle_result = engine.run_pvp_battle(
-                player_a=local_profile,
-                player_b=remote_profile,
+                player_a=player_a,
+                player_b=player_b,
                 timestamp=timestamp
             )
 
-            # 3. Ergebnis aufbereiten
+            # 3. Ergebnis aus LOKALER Perspektive auswerten
+            #    (run_pvp_battle liefert WIN/LOSS bezogen auf player_a)
             result_str = battle_result.get("result", "DRAW")
-            local_winner = (result_str == "WIN")
+            if result_str == "DRAW":
+                local_winner = False
+            elif local_is_a:
+                local_winner = (result_str == "WIN")
+            else:
+                local_winner = (result_str == "LOSS")
+                result_str = "WIN" if local_winner else "LOSS"
 
             response = {
                 "status": "ok",
